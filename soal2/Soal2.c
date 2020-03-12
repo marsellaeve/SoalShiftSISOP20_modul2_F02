@@ -100,16 +100,21 @@ int main(int argm, char* argmod[])
         }
         int status2;
 			while(wait(&status2) > 0);
-            char *argv[] = {"zip", "-r", namafile, NULL}; //-r recurse into directories
-            execv("usr/bin/zip", argv);
+            ch
+            char namazip[100];
+            sprintf(namazip, "%s.zip", date);
+           
 
             pid_t child3 = fork();
             if (child3 == 0) {
-                int status3;
-                while (wait(&status3) > 0);	
-                char *argv[] = {"rm", "-rf", "namafile", NULL};
-			    execv("/bin/rm", argv);
+                 char *argv[] = {"zip", "-r", namazip, namafile, NULL}; //-r recurse into directories
+                execv("usr/bin/zip", argv);
+
             }
+            int status3;
+                while (wait(&status3) > 0);	
+                char *argv[] = {"rm", "-rf", namafile, NULL};
+			    execv("/bin/rm", argv);
 
 			// chdir("..");
 			// char namazip[150];
