@@ -352,7 +352,80 @@ void writeKillB() //program utama akan berhenti tapi membiarkan proses di setiap
 #### B. Tiap-tiap folder lalu diisi dengan 20 gambar yang di download darihttps://picsum.photos/, dimana tiap gambar di download setiap 5 detik. Tiap gambar berbentuk persegi dengan ukuran (t%1000)+100 piksel dimana t adalah detik Epoch Unix. Gambar tersebut diberi nama dengan format timestamp [YYYY-mm-dd_HH:ii:ss].
 
 ```
+while(i<20){
+            char link[100],date2[26];
+            time_t waktugambar;
+            time(&waktugambar);
+            struct tm* tm_info2 = localtime(&waktugambar);
+            // long int sec = time(NULL)%1000 + 100;
+            strftime(date2, 26, "%Y-%m-%d_%H:%M:%S", tm_info2);
+            sprintf(link, "https://picsum.photos/%ld", waktugambar % 1000 + 100); //download + set pixelnya
+            pid_t child2 = fork();
+            if (child2==0){
+                // char *argv[] = {"wget", "-O", date2, link, NULL};
+                // execv("/usr/bin/wget" , argv);
+                execl("/usr/bin/wget", "wget", link, "-O", date2, "-o", "/dev/null", NULL);
+                exit(EXIT_SUCCESS);
+            }
+            sleep(5);
+            i++;
+        }
+```
+### C. Setelah Folder terisi oleh 20 gambar, Folder akan di zip, dan folder asli akan dihapus dan menyisakan hanya folder zip
+```
+char namazip[150];
+			sprintf(namazip, "%s.zip", namafile);
 
+			pid_t child3 = fork();
+			if (child3 == 0) {
+				execl("/usr/bin/zip", "zip", "-r", namazip, namafile, NULL);
+			}
+			int status3;
+			while (wait(&status3) > 0);	
+			execl("/bin/rm", "rm", "-rf", namafile, NULL);
+```
+
+### D&E membuat sebuah program killer dimana memiliki 2 mode, yaitu mode A dan mode B
+
+```
+void writeKillA() //program utama akan langsung menghentikan semua operasinya ketika program killer dijalankan.
+{
+  FILE *temp;
+  temp = fopen("killer.sh", "w");
+  fputs("#!/bin/bash\n", temp);
+  fputs("killOrder=$(echo $(pidof soal2))\n", temp);
+  fputs("kill -9 $killOrder\n", temp);
+  fputs("rm $0\n", temp); //buat matiin temp
+  fclose(temp);
+
+  pid_t temp_idchild;
+  temp_idchild = fork();
+
+  if(temp_idchild == 0){
+    char *argv[]={"chmod", "+x", "killer.sh", NULL}; //+x execute killer.sh nya
+    execv("/bin/chmod", argv);
+  }
+}
+
+void writeKillB() //program utama akan berhenti tapi membiarkan proses di setiap folder yang masih berjalan sampai selesai(semua folder terisi gambar, terzip lalu di delete).
+{
+  FILE *temp;
+  temp = fopen("killer.sh", "w");
+  fputs("#!/bin/bash\n", temp);
+  fputs("killOrder=$(echo $(pidof soal2))\n", temp);
+  fputs("killOrder=${killOrder##* }\n", temp);
+  fputs("kill -9 $killOrder\n", temp);
+  fputs("rm $0\n", temp);
+  fclose(temp);
+
+  pid_t temp_idchild;
+  temp_idchild = fork();
+
+  if(temp_idchild == 0){
+    char *argv[]={"chmod", "+x", "killer.sh", NULL};
+    execv("/bin/chmod", argv);
+  }
+}
 ```
 
 ## No 3 Program C untuk multiprocessing
