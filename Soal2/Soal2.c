@@ -8,16 +8,16 @@
 #include <string.h>
 #include <sys/prctl.h>
 
-void writeKillerA();
-void writeKillerB();
+void writeKillA();
+void writeKillB();
 
 int main(int argm, char **argmod)
 {
     if(strcmp(argmod[1], "-a") == 0){
-    writeKillerA();
+    writeKillA();
   }
     else if(strcmp(argmod[1], "-b") == 0){
-    writeKillerB();
+    writeKillB();
   }
 
   pid_t pid, sid;        // Variabel untuk menyimpan PID
@@ -84,16 +84,6 @@ int main(int argm, char **argmod)
         }
         pid_t child_id2;
         child_id2 = fork();
-      //   int status2;
-      // if(child_id2==0){
-      //       char namazip[100];
-      //       sprintf(namazip, "%s.zip", namafile);
-      //       char *argv[] = {"zip", "-r", namazip, namafile, NULL}; //-r recurse into directories
-      //       execv("usr/bin/zip", argv);
-      //     } else {
-      //         while((wait(&status2)) > 0); 
-      //         char *argv[] = {"rm", "-rf", namafile, NULL};
-			//         execv("/bin/rm", argv);
       int status2;
 			while(wait(&status2) > 0);
 			chdir("..");
@@ -113,7 +103,7 @@ int main(int argm, char **argmod)
  }
 
 
-void writeKillerA() //program utama akan langsung menghentikan semua operasinya ketika program killer dijalankan.
+void writeKillA() //program utama akan langsung menghentikan semua operasinya ketika program killer dijalankan.
 {
   FILE *temp;
   temp = fopen("killer.sh", "w");
@@ -132,7 +122,7 @@ void writeKillerA() //program utama akan langsung menghentikan semua operasinya 
   }
 }
 
-void writeKillerB() //program utama akan berhenti tapi membiarkan proses di setiap folder yang masih berjalan sampai selesai(semua folder terisi gambar, terzip lalu di delete).
+void writeKillB() //program utama akan berhenti tapi membiarkan proses di setiap folder yang masih berjalan sampai selesai(semua folder terisi gambar, terzip lalu di delete).
 {
   FILE *temp;
   temp = fopen("killer.sh", "w");
