@@ -342,6 +342,19 @@ void writeKillB() //program utama akan berhenti tapi membiarkan proses di setiap
 
 ```
 
+#### A. Membuat File tiap 30 detik dengan format timestamp [YYYY-mm-dd_HH:ii:ss].
+```
+    strftime(date, 26, "%Y-%m-%d_%H:%M:%S", tm_info);
+    sprintf(namafile, "/home/rayroyy/%s", date);
+    char *argv[] = {"mkdir", "-p", namafile, NULL};
+```
+
+#### B. Tiap-tiap folder lalu diisi dengan 20 gambar yang di download darihttps://picsum.photos/, dimana tiap gambar di download setiap 5 detik. Tiap gambar berbentuk persegi dengan ukuran (t%1000)+100 piksel dimana t adalah detik Epoch Unix. Gambar tersebut diberi nama dengan format timestamp [YYYY-mm-dd_HH:ii:ss].
+
+```
+
+```
+
 ## No 3 Program C untuk multiprocessing
 
 ### Source Code : [3](https://github.com/marsellaeve/SoalShiftSISOP20_modul2_F02/tree/master/soal3)
