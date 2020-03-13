@@ -192,7 +192,7 @@ Menggunakan Daemon dengan template sesuai modul
 
 Tidak menggunakan fungsi system() pada codingan, hanya menggunakan daemon, fork, exec, dan lain-lain yang diperbolehkan.
 
-## No 3 Program C untuk Daemon
+## No 2 Program C untuk Daemon
 
 ### Source Code : [2](https://github.com/marsellaeve/SoalShiftSISOP20_modul2_F02/tree/master/Soal2)
 ```
@@ -348,6 +348,7 @@ void writeKillB() //program utama akan berhenti tapi membiarkan proses di setiap
     sprintf(namafile, "/home/rayroyy/%s", date);
     char *argv[] = {"mkdir", "-p", namafile, NULL};
 ```
+Pertama-tama mengambil variabel date yang telah diatur formatnya, lalu membuat variabel yang memuat nama file, dan membuat folder dengan command mkdir -p dengan nama file yang telah dibuat, lalu di sleep selama 30 detik.
 
 #### B. Tiap-tiap folder lalu diisi dengan 20 gambar yang di download darihttps://picsum.photos/, dimana tiap gambar di download setiap 5 detik. Tiap gambar berbentuk persegi dengan ukuran (t%1000)+100 piksel dimana t adalah detik Epoch Unix. Gambar tersebut diberi nama dengan format timestamp [YYYY-mm-dd_HH:ii:ss].
 
@@ -371,6 +372,8 @@ while(i<20){
             i++;
         }
 ```
+Pada web picsum terdapat sebuah link dimana kita dapat mengatur ukuran foto yang kita download, oleh karena itu dibuat sebuah variabel long integer yang menghitung formula yang dimuat didalam soal, lalu baru dipanggil fungsi wget dan nama gambar tersebut diambil dari variabel date2. Dilakukan looping sebanyak 20 kali.
+
 ### C. Setelah Folder terisi oleh 20 gambar, Folder akan di zip, dan folder asli akan dihapus dan menyisakan hanya folder zip
 ```
 char namazip[150];
@@ -384,6 +387,7 @@ char namazip[150];
 			while (wait(&status3) > 0);	
 			execl("/bin/rm", "rm", "-rf", namafile, NULL);
 ```
+setelah looping selesai, dilakukan pengezip an dengan command /zip, lalu dilakukan command /rm untuk menghapus folder yang telah di zip.
 
 ### D&E membuat sebuah program killer dimana memiliki 2 mode, yaitu mode A dan mode B
 
@@ -427,6 +431,7 @@ void writeKillB() //program utama akan berhenti tapi membiarkan proses di setiap
   }
 }
 ```
+Pada awal program dilakukan pengecekan apakah mode yang diminta adalah mode a atau mode b, lalu akan masuk ke dalam void makekillA/B yang masing-masing void tersebut membuat file killer.sh yang berisikan command untuk melakukan kill pada program tersebut.
 
 ## No 3 Program C untuk multiprocessing
 
