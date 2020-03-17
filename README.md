@@ -155,6 +155,13 @@ printf("masuk %d:%d:%d skrg: %d:%d:%d\n",timeinfo->tm_hour,timeinfo->tm_min,time
   }
 }
 ```
+
+Untuk melihat hasil screenshot, klik url dibawah ini:
+
+[Hasil](https://github.com/marsellaeve/SoalShiftSISOP20_modul2_F02/blob/master/Screenshot%20Praktikum2/Screenshot%20from%202020-03-17%2022-12-43.png)
+
+[B. Error](https://github.com/marsellaeve/SoalShiftSISOP20_modul2_F02/blob/master/Screenshot%20Praktikum2/Screenshot%20from%202020-03-17%2022-16-02.png)
+
 #### A. Program menerima 4 argumen detik, menit, jam dan path file bash
 
 `int main(int argc, char** array)` untuk memasukkan inputan dengan argumen (contoh ./program \* 34 7 /home/somi/test.sh saat menjalankan program sekaligus input argumen. Kemudian argc untuk menghitung berapa banyak string nya, dan array of strings disimpan dalam char** array.
@@ -589,6 +596,19 @@ int main() {
   }
 }
 ```
+Untuk melihat hasil screenshot, klik url dibawah ini:
+
+[Folder awal kosong](https://github.com/marsellaeve/SoalShiftSISOP20_modul2_F02/blob/master/Screenshot%20Praktikum2/Screenshot%20from%202020-03-17%2022-18-49.png)
+
+[Hasil + unzip](https://github.com/marsellaeve/SoalShiftSISOP20_modul2_F02/blob/master/Screenshot%20Praktikum2/Screenshot%20from%202020-03-17%2022-20-46.png)
+
+[Isi folder sedaap](https://github.com/marsellaeve/SoalShiftSISOP20_modul2_F02/blob/master/Screenshot%20Praktikum2/Screenshot%20from%202020-03-17%2022-20-57.png)
+
+[Isi folder jpg](https://github.com/marsellaeve/SoalShiftSISOP20_modul2_F02/blob/master/Screenshot%20Praktikum2/Screenshot%20from%202020-03-17%2022-21-04.png)
+
+[Isi folder indomie](https://github.com/marsellaeve/SoalShiftSISOP20_modul2_F02/blob/master/Screenshot%20Praktikum2/Screenshot%20from%202020-03-17%2022-21-08.png)
+
+[Isi folder dalam folder indomie](https://github.com/marsellaeve/SoalShiftSISOP20_modul2_F02/blob/master/Screenshot%20Praktikum2/Screenshot%20from%202020-03-17%2022-21-15.png)
 
 #### A. Buat 2 directory "indomie" kemudian 5 detik setelahnya "sedaap"
 
