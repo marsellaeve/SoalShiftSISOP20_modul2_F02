@@ -13,38 +13,7 @@
 #include <string.h>
  
 int main(int argc, char** array){
-  pid_t pid, sid;        // Variabel untuk menyimpan PID
-
-  pid = fork();     // Menyimpan PID dari Child Process
-
-  /* Keluar saat fork gagal
-  * (nilai variabel pid < 0) */
-  if (pid < 0) {
-    exit(EXIT_FAILURE);
-  }
-
-  /* Keluar saat fork berhasil
-  * (nilai variabel pid adalah PID dari child process) */
-  if (pid > 0) {
-    exit(EXIT_SUCCESS);
-  }
-
-  umask(0);
-
-  sid = setsid();
-  if (sid < 0) {
-    exit(EXIT_FAILURE);
-  }
-
-  if ((chdir("/home/evelyn/Praktikum2")) < 0) {
-    exit(EXIT_FAILURE);
-  }
-
-  close(STDIN_FILENO);
-  close(STDOUT_FILENO);
-  close(STDERR_FILENO);
-
-
+	
    	time_t rawtime;
 	struct tm *timeinfo;
 	int i,arr[10],j,temp,a,b;
@@ -109,7 +78,39 @@ int main(int argc, char** array){
 		printf("c Program error masukkan jam (0-23)\n");
 		return 0;
 		}
-	}
+	}	
+  pid_t pid, sid;        // Variabel untuk menyimpan PID
+
+  pid = fork();     // Menyimpan PID dari Child Process
+
+  /* Keluar saat fork gagal
+  * (nilai variabel pid < 0) */
+  if (pid < 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  /* Keluar saat fork berhasil
+  * (nilai variabel pid adalah PID dari child process) */
+  if (pid > 0) {
+    exit(EXIT_SUCCESS);
+  }
+
+  umask(0);
+
+  sid = setsid();
+  if (sid < 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  if ((chdir("/home/evelyn/Praktikum2")) < 0) {
+    exit(EXIT_FAILURE);
+  }
+
+  close(STDIN_FILENO);
+  close(STDOUT_FILENO);
+  close(STDERR_FILENO);
+
+
 	
 	while(1){
 	time(&rawtime);
