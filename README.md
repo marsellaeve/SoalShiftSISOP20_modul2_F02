@@ -714,7 +714,7 @@ membuat file baru dengan fopen write, untuk nama text2 adalah directory indomie 
 
 Created by:
 
-[Rifki Aulia Irawan 142] (https://github.com/rifkiirawan)
+[Rifki Aulia Irawan 142] (https://github.com/rifkiirawan) - Kesulitan : memahami cara kerja fork.
 
 [Evelyn Tjitrodjojo 99] (https://github.com/marsellaeve)
 	- Kesulitan dalam mengerti dan memahami soal (membingungkan).
