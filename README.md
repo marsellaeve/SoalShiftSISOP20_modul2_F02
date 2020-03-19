@@ -411,56 +411,77 @@ void writeKillB()
 
 ```
 
+Berikut adalah hasil screenshot dari program :
+
+### 1. Membuat file tiap 30 detik dengan format nama file menggunakan timestamp yang telah ditentukan oleh soal serta melakukan zip pada file yang telah terisi oleh 20 gambar :
+<img src="SS_Soal2/ssfilezip.png" >
+
+### 2. Mendownload file tiap 5 detik dengan format nama gambar menggunakan timestamp yang telah ditentukan oleh soal :
+<img src="SS_Soal2/ssisifile.png" >
+
+### 3. Isi dari dari zip :
+<img src="SS_Soal2/ssisizip.png" >
+
+### 4. Menjalankan kedua mode (a & b) :
+<img src="SS_Soal2/sskillermode.png" >
+
 #### A. Membuat File tiap 30 detik dengan format timestamp [YYYY-mm-dd_HH:ii:ss].
 ```
-    strftime(date, 26, "%Y-%m-%d_%H:%M:%S", tm_info);
-    sprintf(namafile, "/home/rayroyy/%s", date);
-    char *argv[] = {"mkdir", "-p", namafile, NULL};
+strftime(namafile, 100, "%Y-%m-%d_%H:%M:%S", lt);
+char *argv[] = {"mkdir", namafile, NULL};
+execv("/bin/mkdir", argv);
 ```
-Pertama-tama mengambil variabel date yang telah diatur formatnya, lalu membuat variabel yang memuat nama file, dan membuat folder dengan command mkdir -p dengan nama file yang telah dibuat, lalu di sleep selama 30 detik.
+Pertama-tama membuat variabel namafile yang berisi timestamp, dan membuat folder dengan command mkdir -p dengan nama file yang telah dibuat, lalu di sleep selama 30 detik.
 
 #### B. Tiap-tiap folder lalu diisi dengan 20 gambar yang di download darihttps://picsum.photos/, dimana tiap gambar di download setiap 5 detik. Tiap gambar berbentuk persegi dengan ukuran (t%1000)+100 piksel dimana t adalah detik Epoch Unix. Gambar tersebut diberi nama dengan format timestamp [YYYY-mm-dd_HH:ii:ss].
 
 ```
-while(i<20){
-            char link[100],date2[26];
-            time_t waktugambar;
-            time(&waktugambar);
-            struct tm* tm_info2 = localtime(&waktugambar);
-            // long int sec = time(NULL)%1000 + 100;
-            strftime(date2, 26, "%Y-%m-%d_%H:%M:%S", tm_info2);
-            sprintf(link, "https://picsum.photos/%ld", waktugambar % 1000 + 100); //download + set pixelnya
-            pid_t child2 = fork();
-            if (child2==0){
-                // char *argv[] = {"wget", "-O", date2, link, NULL};
-                // execv("/usr/bin/wget" , argv);
-                execl("/usr/bin/wget", "wget", link, "-O", date2, "-o", "/dev/null", NULL);
-                exit(EXIT_SUCCESS);
-            }
-            sleep(5);
-            i++;
+for(i=0; i<20; i++){
+          strcpy(namafile, curFolder); strcat(namafile, "/");
+          time_t waktugambar;
+          time(&waktugambar);
+          struct tm* lt2 = localtime(&waktugambar);
+          strftime(namagambar, 100, "%Y-%m-%d_%H:%M:%S", lt2);
+          long int sec = time(NULL)%1000 + 100;
+          snprintf(link, 1000, "https://picsum.photos/%ld", sec);
+          child_id3 = fork();
+          if(child_id3 == 0){
+            char *argv[] = {"wget", "-O", namagambar, link, NULL};
+            execv("/usr/bin/wget", argv);
+          }
+          sleep(5);
         }
 ```
-Pada web picsum terdapat sebuah link dimana kita dapat mengatur ukuran foto yang kita download, oleh karena itu dibuat sebuah variabel long integer yang menghitung formula yang dimuat didalam soal, lalu baru dipanggil fungsi wget dan nama gambar tersebut diambil dari variabel date2. Dilakukan looping sebanyak 20 kali.
+Pada web picsum terdapat sebuah link dimana kita dapat mengatur ukuran foto yang kita download, oleh karena itu dibuat sebuah variabel long integer yang menghitung rumus yang dimuat didalam soal, lalu baru dipanggil fungsi wget dan nama gambar tersebut diambil dari variabel date2. Dilakukan looping sebanyak 20 kali dengan interval 5 detik menggunakan `sleep(5)`.
 
 ### C. Setelah Folder terisi oleh 20 gambar, Folder akan di zip, dan folder asli akan dihapus dan menyisakan hanya folder zip
 ```
-char namazip[150];
-			sprintf(namazip, "%s.zip", namafile);
+snprintf(outputZip, 1000, "%s.zip", curFolder);
 
-			pid_t child3 = fork();
-			if (child3 == 0) {
-				execl("/usr/bin/zip", "zip", "-r", namazip, namafile, NULL);
-			}
-			int status3;
-			while (wait(&status3) > 0);	
-			execl("/bin/rm", "rm", "-rf", namafile, NULL);
+        pid_t child_id5= fork();
+        if(child_id5 == 0){
+          char *argv[] = {"zip", "-r", outputZip, curFolder, NULL};
+          execv("/usr/bin/zip", argv);
+        }
+        int status5;
+        while(wait(&status5) > 0);
+        char *argv[] = {"rm", "-rf", curFolder, NULL};
+        execv("/bin/rm", argv);
 ```
-setelah looping selesai, dilakukan pengezip an dengan command /zip, lalu dilakukan command /rm untuk menghapus folder yang telah di zip.
+setelah looping untuk mendownload gambar selesai, dilakukan pengezip an dengan command /zip, lalu dilakukan command /rm untuk menghapus folder yang telah di zip.
 
 ### D&E membuat sebuah program killer dimana memiliki 2 mode, yaitu mode A dan mode B
 
 ```
+if(strcmp(argb[1], "-a") == 0){
+    writeKillA();
+  }
+  if(strcmp(argb[1], "-b") == 0){
+    writeKillB();
+  }
+.
+.
+.
 void writeKillA() //program utama akan langsung menghentikan semua operasinya ketika program killer dijalankan.
 {
   FILE *temp;
@@ -500,7 +521,7 @@ void writeKillB() //program utama akan berhenti tapi membiarkan proses di setiap
   }
 }
 ```
-Pada awal program dilakukan pengecekan apakah mode yang diminta adalah mode a atau mode b, lalu akan masuk ke dalam void makekillA/B yang masing-masing void tersebut membuat file killer.sh yang berisikan command untuk melakukan kill pada program tersebut.
+Pada awal program dilakukan pengecekan apakah mode yang diminta adalah mode -a atau mode -b, lalu akan masuk ke dalam void makekillA atau makeKillB yang masing-masing void tersebut berfungsi untuk membuat file killer.sh yang berisikan command untuk melakukan kill pada program tersebut.
 
 ## No 3 Program C untuk multiprocessing
 
