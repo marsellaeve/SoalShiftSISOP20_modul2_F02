@@ -242,35 +242,43 @@ Tidak menggunakan fungsi system() pada codingan, hanya menggunakan daemon, fork,
 
 ### Source Code : [2](https://github.com/marsellaeve/SoalShiftSISOP20_modul2_F02/tree/master/Soal2)
 ```
-#include<stdio.h>
-#include<time.h>
-#include <sys/stat.h> 
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
+#include <errno.h>
 #include <unistd.h>
-#include <wait.h>
+#include <syslog.h>
 #include <string.h>
-#include <sys/prctl.h>
+#include <wait.h>
+#include <time.h>
 
+// void getTimestamp(char *path);
 void writeKillA();
 void writeKillB();
 
-int main(int argm, char **argmod)
-{
-    if(strcmp(argmod[1], "-a") == 0){
+int main(int argc, char **argb){
+  if(strcmp(argb[1], "-a") == 0){
     writeKillA();
   }
-    else if(strcmp(argmod[1], "-b") == 0){
+  if(strcmp(argb[1], "-b") == 0){
     writeKillB();
   }
 
-  pid_t pid, sid;        // Variabel untuk menyimpan PID
-  pid = fork();     // Menyimpan PID dari Child Process
-  if (pid > 0) { // Keluar saat fork berhasil
-    exit(EXIT_SUCCESS);
-  }
-  if (pid < 0) {   //Keluar saat fork gagal
+  char buf[100];
+  char *workingDir = getcwd(buf, 100);
+
+  pid_t pid, sid;
+
+  pid = fork();
+  
+  if (pid < 0) {
     exit(EXIT_FAILURE);
+  }
+
+  if (pid > 0) {
+    exit(EXIT_SUCCESS);
   }
 
   umask(0);
@@ -279,108 +287,123 @@ int main(int argm, char **argmod)
   if (sid < 0) {
     exit(EXIT_FAILURE);
   }
+
+  if ((chdir("/home/rayroyy/Documents/SoalShiftSISOP20_modul2_F02-master/Soal2")) < 0) {
+    exit(EXIT_FAILURE);
+  }
+
   close(STDIN_FILENO);
   close(STDOUT_FILENO);
   close(STDERR_FILENO);
 
-  while(1)
-  {
-    int status;
+  while(1){
+    chdir(workingDir);
+    pid_t child_id1;
+    int status1;
+    
+    child_id1 = fork();
+
     time_t waktufile;
-    char date[26], namafile[26];
-    struct tm* tm_info = localtime(&waktufile);
-    waktufile = time(NULL);
-    strftime(date, 26, "%Y-%m-%d_%H:%M:%S", tm_info);
-    sprintf(namafile, "/home/rayroyy/%s", date);
-    char *argv[] = {"mkdir", "-p", namafile, NULL};
-
-     pid_t child_id = fork();
-
-    if (child_id == 0)
-    {
-        execv("/bin/mkdir", argv); // buat bikin nama file
-    }
-
-    wait(&status);
-
-    child_id=fork();
-    if (child_id == 0)
-    {
-        int i=0;
-        chdir(namafile);
-        while(i<20){
-            char link[100],date2[26];
-            time_t waktugambar;
-            time(&waktugambar);
-            struct tm* tm_info2 = localtime(&waktugambar);
-            // long int sec = time(NULL)%1000 + 100;
-            strftime(date2, 26, "%Y-%m-%d_%H:%M:%S", tm_info2);
-            sprintf(link, "https://picsum.photos/%ld", waktugambar % 1000 + 100); //download + set pixelnya
-            pid_t child2 = fork();
-            if (child2==0){
-                // char *argv[] = {"wget", "-O", date2, link, NULL};
-                // execv("/usr/bin/wget" , argv);
-                execl("/usr/bin/wget", "wget", link, "-O", date2, "-o", "/dev/null", NULL);
-                exit(EXIT_SUCCESS);
-            }
-            sleep(5);
-            i++;
-        }
-        pid_t child_id2;
-        child_id2 = fork();
+    struct tm *lt;
+    time(&waktufile);
+    lt = localtime(&waktufile);
+    char date[26], namafile[100];
+    strftime(namafile, 100, "%Y-%m-%d_%H:%M:%S", lt);
+    
+    if(child_id1 == 0){
+      pid_t child_id2;
       int status2;
-			while(wait(&status2) > 0);
-			chdir("..");
-			char namazip[150];
-			sprintf(namazip, "%s.zip", namafile);
+      
+      child_id2 = fork();
 
-			pid_t child3 = fork();
-			if (child3 == 0) {
-				execl("/usr/bin/zip", "zip", "-r", namazip, namafile, NULL);
-			}
-			int status3;
-			while (wait(&status3) > 0);	
-			execl("/bin/rm", "rm", "-rf", namafile, NULL);
-            }
+      if(child_id2 == 0){
+        char *argv[] = {"mkdir", namafile, NULL};
+        execv("/bin/mkdir", argv);
+      } else {
+        while((wait(&status2)) > 0);
+        pid_t child_id3;
+        int status3, i;
+        char curFolder[1000]; strcpy(curFolder, namafile);
+        char link[100];
+        char namagambar[100];
+        chdir(namafile);
+
+        for(i=0; i<20; i++){
+          strcpy(namafile, curFolder); strcat(namafile, "/");
+          time_t waktugambar;
+          time(&waktugambar);
+          struct tm* lt2 = localtime(&waktugambar);
+          strftime(namagambar, 100, "%Y-%m-%d_%H:%M:%S", lt2);
+          long int sec = time(NULL)%1000 + 100;
+          snprintf(link, 1000, "https://picsum.photos/%ld", sec);
+          child_id3 = fork();
+          if(child_id3 == 0){
+            char *argv[] = {"wget", "-O", namagambar, link, NULL};
+            execv("/usr/bin/wget", argv);
+          }
+          sleep(5);
+        }
+
+        pid_t child_id4;
+        int status4;
+        child_id4 = fork();
+        while(wait(&status4) > 0);
+        chdir("..");
+        char outputZip[1000];
+        snprintf(outputZip, 1000, "%s.zip", curFolder);
+
+        pid_t child_id5= fork();
+        if(child_id5 == 0){
+          char *argv[] = {"zip", "-r", outputZip, curFolder, NULL};
+          execv("/usr/bin/zip", argv);
+        }
+        int status5;
+        while(wait(&status5) > 0);
+        char *argv[] = {"rm", "-rf", curFolder, NULL};
+        execv("/bin/rm", argv);
+      }
+    }
     sleep(30);
   }
- }
+  return 0;
+}
 
-
-void writeKillA() //program utama akan langsung menghentikan semua operasinya ketika program killer dijalankan.
+void writeKillA()
 {
   FILE *temp;
   temp = fopen("killer.sh", "w");
   fputs("#!/bin/bash\n", temp);
-  fputs("killOrder=$(echo $(pidof soal2))\n", temp);
+  fputs("killOrder=$(echo $(pidof soal2rev))\n", temp);
   fputs("kill -9 $killOrder\n", temp);
-  fputs("rm $0\n", temp); //buat matiin temp
+  fputs("rm $0\n", temp);
   fclose(temp);
 
-  pid_t temp_idchild;
-  temp_idchild = fork();
+  pid_t tempChild_id;
+  int tempStatus;
+  tempChild_id = fork();
 
-  if(temp_idchild == 0){
-    char *argv[]={"chmod", "+x", "killer.sh", NULL}; //+x execute killer.sh nya
+  if(tempChild_id == 0){
+    char *argv[]={"chmod", "+x", "killer.sh", NULL};
     execv("/bin/chmod", argv);
   }
 }
 
-void writeKillB() //program utama akan berhenti tapi membiarkan proses di setiap folder yang masih berjalan sampai selesai(semua folder terisi gambar, terzip lalu di delete).
+void writeKillB()
 {
   FILE *temp;
   temp = fopen("killer.sh", "w");
   fputs("#!/bin/bash\n", temp);
-  fputs("killOrder=$(echo $(pidof soal2))\n", temp);
+  fputs("killOrder=$(echo $(pidof soal2rev))\n", temp);
   fputs("killOrder=${killOrder##* }\n", temp);
   fputs("kill -9 $killOrder\n", temp);
   fputs("rm $0\n", temp);
   fclose(temp);
 
-  pid_t temp_idchild;
-  temp_idchild = fork();
+  pid_t tempChild_id;
+  int tempStatus;
+  tempChild_id = fork();
 
-  if(temp_idchild == 0){
+  if(tempChild_id == 0){
     char *argv[]={"chmod", "+x", "killer.sh", NULL};
     execv("/bin/chmod", argv);
   }
